@@ -3,6 +3,12 @@ variable "nombre" {
     type = string
 }
 
+variable "tags" {
+    description = "Etiquetas"
+    type = map(string)
+    default = {} 
+}
+
 variable "region" {
     description = "Región donde se desplegará la VPC"
     type = string

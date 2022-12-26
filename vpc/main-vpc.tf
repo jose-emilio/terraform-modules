@@ -12,38 +12,34 @@ resource "aws_internet_gateway" "igw" {
    }
 }
 
-
 resource "aws_subnet" "pub-subnets" {
    vpc_id = aws_vpc.vpc.id
    count = var.zonas
    cidr_block = var.pub-subnets[count.index]
-   availability_zone = "${var.region}${local.zonas[count.index]}"
+   availability_zone = data.aws_availability_zones.available.names[count.index]
    tags = {
       Name = "${var.nombre}-pub-${count.index}"
    }
- 
 }
 
 resource "aws_subnet" "app-subnets" {
    vpc_id = aws_vpc.vpc.id
    count = var.zonas
    cidr_block = var.app-subnets[count.index]
-   availability_zone = "${var.region}${local.zonas[count.index]}"
+   availability_zone = data.aws_availability_zones.available.names[count.index]
    tags = {
       Name = "${var.nombre}-app-${count.index}"
    }
- 
 }
 
 resource "aws_subnet" "db-subnets" {
    vpc_id = aws_vpc.vpc.id
    count = var.zonas
    cidr_block = var.db-subnets[count.index]
-   availability_zone = "${var.region}${local.zonas[count.index]}"
+   availability_zone = data.aws_availability_zones.available.names[count.index]
    tags = {
       Name = "${var.nombre}-db-${count.index}"
    }
- 
 }
 
 resource "aws_route_table" "ruta-publica" {
@@ -65,7 +61,6 @@ resource "aws_route_table_association" "asociacion-pub" {
 
 resource "aws_eip" "eip" {
    count = var.nat == "SI" ? var.zonas : 0
-
 }
 
 resource "aws_route_table" "ruta-privada" {

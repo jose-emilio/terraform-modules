@@ -25,3 +25,22 @@ variable "nat" {
       error_message = "Debes elegir SI o NO"
    }
 }
+
+variable "pub-subnets" {
+    description = "Lista de bloques CIDR de las subredes públicas"
+    type = list(string)
+    default = ["172.16.0.0/24","172.16.1.0/24","172.16.2.0/24","172.16.3.0/24","172.16.4.0/24","172.16.5.0/24"]
+}
+
+variable "app-subnets" {
+    description = "Lista de bloques CIDR de las subredes públicas"
+    type = list(string)
+    default = ["172.16.6.0/24","172.16.7.0/24","172.16.8.0/24","172.16.9.0/24","172.16.10.0/24","172.16.11.0/24"]
+}
+
+variable "db-subnets" {
+    description = "Lista de bloques CIDR de las subredes públicas"
+    type = list(string)
+    default = ["172.16.12.0/24","172.16.13.0/24","172.16.14.0/24","172.16.15.0/24","172.16.16.0/24","172.16.17.0/24"]
+}
+

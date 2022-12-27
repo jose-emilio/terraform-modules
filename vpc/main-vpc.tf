@@ -1,21 +1,21 @@
 resource "aws_vpc" "vpc" {
-   cidr_block = "172.16.0.0/16"
+   cidr_block = var.vpc-cidr 
    tags = {
-     Name = var.nombre
+     Name = "${var.nombre}-vpc"
    }
 }
 
 resource "aws_internet_gateway" "igw" {
    vpc_id = aws_vpc.vpc.id
    tags = {
-      Name = "${var.nombre}-igw"
+     Name = "${var.nombre}-igw"
    }
 }
 
 resource "aws_subnet" "pub-subnets" {
    vpc_id = aws_vpc.vpc.id
    count = var.zonas
-   cidr_block = var.pub-subnets[count.index]
+   cidr_block = var.pub-subnets-cidr[count.index]
    availability_zone = data.aws_availability_zones.available.names[count.index]
    tags = {
       Name = "${var.nombre}-pub-${count.index}"
@@ -25,7 +25,7 @@ resource "aws_subnet" "pub-subnets" {
 resource "aws_subnet" "app-subnets" {
    vpc_id = aws_vpc.vpc.id
    count = var.zonas
-   cidr_block = var.app-subnets[count.index]
+   cidr_block = var.app-subnets-cidr[count.index]
    availability_zone = data.aws_availability_zones.available.names[count.index]
    tags = {
       Name = "${var.nombre}-app-${count.index}"
@@ -35,7 +35,7 @@ resource "aws_subnet" "app-subnets" {
 resource "aws_subnet" "db-subnets" {
    vpc_id = aws_vpc.vpc.id
    count = var.zonas
-   cidr_block = var.db-subnets[count.index]
+   cidr_block = var.db-subnets-cidr[count.index]
    availability_zone = data.aws_availability_zones.available.names[count.index]
    tags = {
       Name = "${var.nombre}-db-${count.index}"
@@ -60,7 +60,7 @@ resource "aws_route_table_association" "asociacion-pub" {
 }
 
 resource "aws_eip" "eip" {
-   count = var.nat == "SI" ? var.zonas : 0
+   count = var.nat ? var.zonas : 0
 }
 
 resource "aws_route_table" "ruta-privada" {
@@ -72,7 +72,7 @@ resource "aws_route_table" "ruta-privada" {
 }
 
 resource "aws_nat_gateway" "natgw" {
-   count = var.nat == "SI" ? var.zonas : 0
+   count = var.nat ? var.zonas : 0
    allocation_id = aws_eip.eip[count.index].id
    subnet_id = aws_subnet.pub-subnets[count.index].id
    tags = {
@@ -82,7 +82,7 @@ resource "aws_nat_gateway" "natgw" {
 }
  
 resource "aws_route" "ruta-nat" {
-   count = var.nat == "SI" ? var.zonas : 0
+   count = var.nat ? var.zonas : 0
    destination_cidr_block = "0.0.0.0/0"
    route_table_id = aws_route_table.ruta-privada[count.index].id
    nat_gateway_id = aws_nat_gateway.natgw[count.index].id

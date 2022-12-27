@@ -3,15 +3,9 @@ variable "nombre" {
     type = string
 }
 
-variable "tags" {
+variable "etiquetas" {
     description = "Etiquetas"
-    type = map(string)
-    default = {} 
-}
-
-variable "region" {
-    description = "Región donde se desplegará la VPC"
-    type = string
+    type = list 
 }
 
 variable "zonas" {
@@ -24,27 +18,29 @@ variable "zonas" {
 }
 
 variable "nat" {
-    description = "Booleano que describe si se crearán o no NAT Gateways (SI / NO)"
-    type = string
-    validation {
-      condition = var.nat=="SI" || var.nat=="NO"
-      error_message = "Debes elegir SI o NO"
-   }
+    description = "Booleano que describe si se crearán o no NAT Gateways (true / false)"
+    type = bool 
 }
 
-variable "pub-subnets" {
+variable "vpc-cidr" {
+    description = "Bloque CIDR IPv4 de la VPC"
+    type = string
+    default = "172.16.0.0/16"
+}
+
+variable "pub-subnets-cidr" {
     description = "Lista de bloques CIDR de las subredes públicas"
     type = list(string)
     default = ["172.16.0.0/24","172.16.1.0/24","172.16.2.0/24","172.16.3.0/24","172.16.4.0/24","172.16.5.0/24"]
 }
 
-variable "app-subnets" {
+variable "app-subnets-cidr" {
     description = "Lista de bloques CIDR de las subredes públicas"
     type = list(string)
     default = ["172.16.6.0/24","172.16.7.0/24","172.16.8.0/24","172.16.9.0/24","172.16.10.0/24","172.16.11.0/24"]
 }
 
-variable "db-subnets" {
+variable "db-subnets-cidr" {
     description = "Lista de bloques CIDR de las subredes públicas"
     type = list(string)
     default = ["172.16.12.0/24","172.16.13.0/24","172.16.14.0/24","172.16.15.0/24","172.16.16.0/24","172.16.17.0/24"]
